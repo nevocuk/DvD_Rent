@@ -1,0 +1,216 @@
+@model IEnumerable<DVD_Rent.Models.Kiralama>
+@{    // Film adlarını eşleştirmek için ViewBag'den film listesi alınır
+    var filmler = ViewBag.Filmler as List<DVD_Rent.Models.Film>;
+}
+
+<h2>Kiralama Listesi</h2>
+<a asp-action="KiralamaEkle" class="btn btn-primary" style="margin-bottom:15px;">Yeni Kiralama</a>
+<br />
+
+<div>
+    <button id="aktifBtn" class="btn btn-secondary" onclick="toggleKiralama('aktif')">Şu An Kirada Olanlar</button>
+    <button id="gecmisBtn" class="btn btn-secondary" style="margin-left:5px;" onclick="toggleKiralama('gecmis')">Geçmiş Kiralamalar</button>
+    <button id="yaklasanBtn" class="btn btn-secondary" style="margin-left:5px;" onclick="toggleKiralama('yaklasan')">İade Günü Yaklaşanlar</button>
+    <button id="igecmisBtn" class="btn btn-secondary" style="margin-left:5px;" onclick="toggleKiralama('igecmis')">İade Günü Geçenler</button>
+</div>
+
+<div id="aktifKiralama" style="margin-top:20px; display:block;">
+    <h4>Şu An Kirada Olanlar</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Müşteri ID</th>
+                <th>Film ID</th>
+                <th>Film Adı</th>
+                <th>Kiralama Tarihi</th>
+                <th>İade Tarihi</th>
+                <th>Gecikti mi?</th>
+                <th>Cezasız Ücret</th>
+                <th>İşlem</th>
+                <th>Müşteriye Git</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var kiralama in Model.Where(k => !k.iade_edildi_mi))
+        {
+            var filmAd = filmler?.FirstOrDefault(f => f.film_id == kiralama.film_id)?.ad ?? "";
+            <tr>
+                <td>@kiralama.kiralama_id</td>
+                <td>@kiralama.musteri_id</td>
+                <td>@kiralama.film_id</td>
+                <td>@filmAd</td>
+                <td>@kiralama.kiralama_tarihi.ToShortDateString()</td>
+                <td>@kiralama.iade_tarihi?.ToShortDateString()</td>
+                <td>@(kiralama.gecikti_mi ? "Evet" : "Hayır")</td>
+                <td>@kiralama.ucret ₺</td>
+                <td>
+                    <form asp-action="KiralamaIade" method="post" style="display:inline;">
+                        <input type="hidden" name="kiralama_id" value="@kiralama.kiralama_id" />
+                        <button type="submit" class="btn btn-success btn-sm">İade Edildi</button>
+                    </form>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="MusteriDuzenle" asp-route-id="@kiralama.musteri_id" target="_blank">Müşteriye Git</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div id="gecmisKiralama" style="margin-top:20px; display:none;">
+    <h4>Geçmiş Kiralamalar</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Müşteri ID</th>
+                <th>Film ID</th>
+                <th>Film Adı</th>
+                <th>Kiralama Tarihi</th>
+                <th>İade Tarihi</th>
+                <th>Gecikti mi?</th>
+                <th>Ücret</th>
+                <th>Müşteriye Git</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var kiralama in Model.Where(k => k.iade_edildi_mi))
+        {
+            var filmAd = filmler?.FirstOrDefault(f => f.film_id == kiralama.film_id)?.ad ?? "";
+            <tr>
+                <td>@kiralama.kiralama_id</td>
+                <td>@kiralama.musteri_id</td>
+                <td>@kiralama.film_id</td>
+                <td>@filmAd</td>
+                <td>@kiralama.kiralama_tarihi.ToShortDateString()</td>
+                <td>@kiralama.iade_tarihi?.ToShortDateString()</td>
+                <td>@(kiralama.gecikti_mi ? "Evet" : "Hayır")</td>
+                <td>@kiralama.ucret ₺</td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="MusteriDuzenle" asp-route-id="@kiralama.musteri_id" target="_blank">Müşteriye Git</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+@* İade günü yaklaşan kiralamalar *@
+<div id="yaklasanKiralama" style="margin-top:20px; display:none;">
+    <h4>İade Günü Yaklaşanlar</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Müşteri ID</th>
+                <th>Film ID</th>
+                <th>Film Adı</th>
+                <th>Kiralama Tarihi</th>
+                <th>İade Tarihi</th>
+                <th>Gecikti mi?</th>
+                <th>Ücret</th>
+                <th>İşlem</th>
+                <th>Müşteriye Git</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var kiralama in Model.Where(k => !k.iade_edildi_mi && k.iade_tarihi.HasValue && k.iade_tarihi >= DateTime.Now && k.iade_tarihi <= DateTime.Now.AddDays(2)))
+        {
+            var filmAd = filmler?.FirstOrDefault(f => f.film_id == kiralama.film_id)?.ad ?? "";
+            <tr>
+                <td>@kiralama.kiralama_id</td>
+                <td>@kiralama.musteri_id</td>
+                <td>@kiralama.film_id</td>
+                <td>@filmAd</td>
+                <td>@kiralama.kiralama_tarihi.ToShortDateString()</td>
+                <td>@kiralama.iade_tarihi?.ToShortDateString()</td>
+                <td>@(kiralama.gecikti_mi ? "Evet" : "Hayır")</td>
+                <td>@kiralama.ucret ₺</td>
+                <td>
+                    <form asp-action="KiralamaIade" method="post" style="display:inline;">
+                        <input type="hidden" name="kiralama_id" value="@kiralama.kiralama_id" />
+                        <button type="submit" class="btn btn-success btn-sm">İade Edildi</button>
+                    </form>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="MusteriDuzenle" asp-route-id="@kiralama.musteri_id" target="_blank">Müşteriye Git</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div id="igecmisKiralama" style="margin-top:20px; display:none;">
+    <h4>İade Günü Geçenler</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Müşteri ID</th>
+                <th>Film ID</th>
+                <th>Film Adı</th>
+                <th>Kiralama Tarihi</th>
+                <th>İade Tarihi</th>
+                <th>Gecikti mi?</th>
+                <th>Ücret (Ceza Dahil)</th>
+                <th>İşlem</th>
+                <th>Müşteriye Git</th>
+            </tr>
+        </thead>
+        <tbody>
+                    @*Ceza hesaplaması yapılır*@
+        @foreach (var kiralama in Model.Where(k => k.gecikti_mi && !k.iade_edildi_mi))
+        { 
+            int gunGecikme = 0;
+            decimal ceza = 0;
+            if (kiralama.iade_tarihi.HasValue && kiralama.iade_tarihi.Value < DateTime.Now)
+            {
+                gunGecikme = (DateTime.Now.Date - kiralama.iade_tarihi.Value.Date).Days;
+                ceza = gunGecikme * 10;
+            }
+            var filmAd = filmler?.FirstOrDefault(f => f.film_id == kiralama.film_id)?.ad ?? "";
+            <tr>
+                <td>@kiralama.kiralama_id</td>
+                <td>@kiralama.musteri_id</td>
+                <td>@kiralama.film_id</td>
+                <td>@filmAd</td>
+                <td>@kiralama.kiralama_tarihi.ToShortDateString()</td>
+                <td>@kiralama.iade_tarihi?.ToShortDateString()</td>
+                <td>@(kiralama.gecikti_mi ? "Evet" : "Hayır")</td>
+                <td>
+                    @(kiralama.ucret + ceza) ₺
+                    @if(ceza > 0)
+                    {
+                        <span style="color:red;">(+@gunGecikme gün x 10₺ ceza)</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="KiralamaIade" method="post" style="display:inline;">
+                        <input type="hidden" name="kiralama_id" value="@kiralama.kiralama_id" />
+                        <button type="submit" class="btn btn-success btn-sm">İade Edildi</button>
+                    </form>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="MusteriDuzenle" asp-route-id="@kiralama.musteri_id" target="_blank">Müşteriye Git</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<br><br><br>
+@* JavaScript ile butonlara tıklanınca farklı kiralama listeleri gösterilir *@ 
+<script>
+    function toggleKiralama(type) {
+        var aktif = document.getElementById('aktifKiralama');
+        var gecmis = document.getElementById('gecmisKiralama');
+        var yaklasan = document.getElementById('yaklasanKiralama');
+        var igecmis = document.getElementById('igecmisKiralama');
+        if (aktif) aktif.style.display = (type === 'aktif') ? 'block' : 'none';
+        if (gecmis) gecmis.style.display = (type === 'gecmis') ? 'block' : 'none';
+        if (yaklasan) yaklasan.style.display = (type === 'yaklasan') ? 'block' : 'none';
+        if (igecmis) igecmis.style.display = (type === 'igecmis') ? 'block' : 'none';
+    }
+</script>

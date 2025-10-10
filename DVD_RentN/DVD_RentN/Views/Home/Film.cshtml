@@ -1,0 +1,49 @@
+@model IEnumerable<DVD_Rent.Models.Film>
+
+<h2>Film Listesi</h2>
+<a asp-action="FilmEkle" class="btn btn-primary" style="margin-bottom:15px;">Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Film ID</th>
+            <th>Ad</th>
+            <th>Ülke</th>
+            <th>Yıl</th>
+            <th>Tür</th>
+            <th>Özet</th>
+            <th>Oyuncular</th>
+            <th>Kopya Sayısı</th>
+            <th>Toplam Kiralama Sayısı</th>
+            <th>Düzenle</th>
+            <th>Sil</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var film in Model)
+            // Her film nesnesi için tabloya bir satır eklenir
+    {
+        string kopyaRenk = film.kopya_sayisi == 0 ? "red"
+                        : film.kopya_sayisi == 1 ? "orange"
+                        : film.kopya_sayisi == 2 ? "green"
+                        : "inherit";
+        <tr>
+            <td>@film.film_id</td>
+            <td>@film.ad</td>
+            <td>@film.ulke</td>
+            <td>@film.yil</td>
+            <td>@film.tur</td>
+            <td>@film.ozet</td>
+            <td>@film.oyuncular</td>
+            <td style="color:@kopyaRenk; font-weight:bold;">@film.kopya_sayisi</td>
+            <td>@film.kiralama_sayisi</td>
+            <td>
+                <a asp-action="FilmDuzenle" asp-route-id="@film.film_id" class="btn btn-warning btn-sm">Düzenle</a>
+            </td>
+            <td>
+                <a asp-action="FilmSil" asp-route-id="@film.film_id" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinize emin misiniz?');">Sil</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br><br><br>

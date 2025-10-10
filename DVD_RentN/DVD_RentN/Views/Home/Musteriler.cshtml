@@ -1,0 +1,42 @@
+@model IEnumerable<DVD_Rent.Models.Musteri>
+
+<h2>Müşteri Listesi</h2>
+@* Yeni müşteri ekleme sayfasına yönlendiren buton *@
+<a class="btn btn-primary" asp-action="MusteriEkle" asp-controller="Home" style="margin-bottom:18px;">Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>TC Kimlik No</th>
+            <th>İsim</th>
+            <th>Soyisim</th>
+            <th>Telefon</th>
+            <th>Cinsiyet</th>
+            <th>Üye Tarihi</th>
+            <th>Düzenle</th>
+            <th>Sil</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var musteri in Model)
+        @* Tüm müşteriler listelenir *@
+    {
+        <tr>
+            <td>@musteri.musteri_id</td>
+            <td>@musteri.tc_kimlik_no</td>
+            <td>@musteri.isim</td>
+            <td>@musteri.soyisim</td>
+            <td>@musteri.telefon</td>
+            <td>@musteri.cinsiyet</td>
+            <td>@musteri.uye_tarihi.ToShortDateString()</td>
+            <td>
+                <a asp-action="MusteriDuzenle" asp-route-id="@musteri.musteri_id" class="btn btn-warning btn-sm">Düzenle</a>
+            </td>
+            <td>
+                <a asp-action="MusteriSil" asp-route-id="@musteri.musteri_id" class="btn btn-danger btn-sm" onclick="return confirm('Silmek istediğinize emin misiniz?');">Sil</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br><br><br>

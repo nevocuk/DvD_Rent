@@ -1,0 +1,132 @@
+@{    // Sayfa başlığı ve genel layout dosyası tanımlanır
+    ViewData["Title"] = "Ana Sayfa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+</style>
+
+<main>
+@*Duyurular başlığı ve kaydırmalı görsel alanı*@ 
+  <section id="anasayfa" class="page">
+    <h2>📣 Duyurular</h2>
+    <div class="slider-container">
+      <div class="slider-track" id="sliderTrack">
+        <div class="slider-slide">
+          <a href="endgame.html" target="_blank"><img src="images/endgame.jpg" alt="Endgame"></a>
+          <h3>Avengers: Endgame Tüm Zamanların Gişe Rekorunu Kırdı!</h3>
+        </div>
+        <div class="slider-slide">
+          <a href="ballerina.html" target="_blank"><img src="images/ballerina.jpg" alt="Ballerina"></a>
+          <h3>Ballerina, 12 Temmuz'da Sevenleriyle Buluşuyor!</h3>
+        </div>
+        <div class="slider-slide">
+          <a href="astral.html" target="_blank"><img src="images/film3.jpg" alt="Astral Journey"></a>
+          <h3>Detaylar Yakında!</h3>
+        </div>
+      </div>
+      <div class="slider-nav">
+        <button type="button" id="sliderPrev">&#8592;</button>
+        <button type="button" id="sliderNext">&#8594;</button>
+      </div>
+    </div>
+    <br><br>
+    <section class="popular">
+      <h2>🎬 Bu Ay En Çok Tercih Edilen Filmlerimiz</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Film Adı</th>
+            <th>Kategori</th>
+            <th>Kiralama Sayısı</th>
+          </tr>
+        </thead>
+        <tbody>
+          @* En çok tercih edilen filmler için tablo oluşturma*@
+          @*ViewBag üzerinden gelen popüler filmler listelenir*@
+          @foreach (var film in ViewBag.PopulerFilmler ?? new List<DVD_Rent.Models.Film>())
+          {
+              <tr>
+                  <td>@film.film_id</td>
+                  <td>@film.ad</td>
+                  <td>@film.tur</td>
+                  <td>@film.kiralama_sayisi</td>
+              </tr>
+          }
+        </tbody>
+      </table>
+
+      <h2>Bu Ay Pek Revaçta Olmayanlar</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Film Adı</th>
+            <th>Kategori</th>
+            <th>Kiralama Sayısı</th>
+          </tr>
+        </thead>
+        <tbody>
+          @* Pek tercih edilmeyen filmler için tablo *@
+          @foreach (var film in ViewBag.AzTercihEdilenFilmler ?? new List<DVD_Rent.Models.Film>())
+          {
+              <tr>
+                  <td>@film.film_id</td>
+                  <td>@film.ad</td>
+                  <td>@film.tur</td>
+                  <td>@film.kiralama_sayisi</td>
+              </tr>
+          }
+        </tbody>
+      </table>
+    
+
+    <h2>📅 Günlük Kiralanan Film Kopya Sayısı</h2>
+<table class="gunluk-kiralama-table">
+    <thead>
+        <tr>
+            <th>Gün</th>
+            <th>Toplam Kiralanan Film Kopya Sayısı</th>
+        </tr>
+    </thead>
+</table>
+<div class="gunluk-kiralama-scroll">
+    <table class="gunluk-kiralama-table">
+        <tbody>
+            @foreach (var ozet in (ViewBag.GunlukKiralamaOzet as IEnumerable<dynamic>) ?? new List<dynamic>())
+            {
+                <tr>
+                    <td>@ozet.Gun.ToString("yyyy-MM-dd")</td>
+                    <td>@ozet.ToplamFilmSayisi</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+  </section>
+  <br><br><br>
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slider-slide');
+const track = document.getElementById('sliderTrack');
+const prevBtn = document.getElementById('sliderPrev');
+const nextBtn = document.getElementById('sliderNext');
+
+function showSlide(idx) {
+    if (idx < 0) idx = slides.length - 1;
+    if (idx >= slides.length) idx = 0;
+    currentSlide = idx;
+    track.style.transform = `translateX(-${idx * 100}%)`;
+}
+prevBtn.onclick = () => showSlide(currentSlide - 1);
+nextBtn.onclick = () => showSlide(currentSlide + 1);
+
+//Oto Geçişler Slide İle Sağlanır
+setInterval(() => showSlide(currentSlide + 1), 6000);
+
+showSlide(0);
+</script>
+

@@ -1,0 +1,45 @@
+@model DVD_Rent.Models.Musteri
+@* Yeni müşteri eklemek için form başlatılır *@
+<h2>Yeni Müşteri Ekle</h2>
+<form class="film_form" asp-action="MusteriEkle" method="post">
+ @* Modeldeki doğrulama hatalarını topluca göstermek için özet alanı *@
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div>
+        <label>TC Kimlik No</label>
+        <input asp-for="tc_kimlik_no" maxlength="11" minlength="11" pattern="\d{11}" required />
+        <span asp-validation-for="tc_kimlik_no" class="text-danger"></span>
+    </div>
+    <div>
+        <label>İsim</label>
+        <input asp-for="isim" pattern="^[a-zA-ZçÇğĞıİöÖşŞüÜ\s]+$" maxlength="50" required />
+        <span asp-validation-for="isim" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Soyisim</label>
+        <input asp-for="soyisim" pattern="^[a-zA-ZçÇğĞıİöÖşŞüÜ\s]+$" maxlength="50" required />
+        <span asp-validation-for="soyisim" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Telefon</label>
+        <input asp-for="telefon" maxlength="11" minlength="10" required />
+        <span asp-validation-for="telefon" class="text-danger"></span>
+    </div>
+    <div>
+        <label>Cinsiyet</label>
+        <div class="radio-group">
+            <label>
+                <input type="radio" asp-for="cinsiyet" value="Erkek" /> Erkek
+            </label>
+            <label>
+                <input type="radio" asp-for="cinsiyet" value="Kadin" /> Kadın
+            </label>
+        </div>
+    </div>
+    <div>
+        <label>Üye Tarihi</label>
+        <input asp-for="uye_tarihi" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+        <span asp-validation-for="uye_tarihi" class="text-danger"></span>
+    </div>
+    <button type="submit">Kaydet</button>
+</form>
+<br><br><br>

@@ -1,0 +1,40 @@
+@model DVD_Rent.Models.Film
+
+<h2>Film Düzenle</h2>
+<form class="film_form" asp-action="FilmDuzenle" method="post">
+    <input type="hidden" asp-for="film_id" />
+        @*Düzenlenecek filmin ID’si gizli olarak gönderilir*@
+    <div>
+        <label>Ad</label>
+        <input asp-for="ad" />
+    </div>
+    <div>
+        <label>Ülke</label>
+        <input asp-for="ulke" />
+    </div>
+    <div>
+        <label>Yıl</label>
+        <input asp-for="yil" type="number" max="@DateTime.Now.Year" />
+    </div>
+    <div>
+        <label>Tür</label>
+        <input asp-for="tur" />
+    </div>
+    <div>
+        <label>Özet</label>
+        <input asp-for="ozet" />
+    </div>
+    <div>
+        <label>Oyuncular</label>
+        <input asp-for="oyuncular" />
+    </div>
+    <div>
+        <label>Kopya Sayısı</label>
+        <input asp-for="kopya_sayisi" readonly type="number" />
+        
+    @*Form gönderildiğinde güncelleme işlemi yapılır*@
+
+    </div>
+    <button type="submit">Kaydet</button>
+</form>
+<br><br><br>

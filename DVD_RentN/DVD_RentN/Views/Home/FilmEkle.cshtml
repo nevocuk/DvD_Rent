@@ -1,0 +1,35 @@
+@model DVD_Rent.Models.Film
+
+<h2>Yeni Film Ekle</h2>
+<form class="film_form" asp-action="FilmEkle" method="post">
+    <div>
+        <label>Ad</label>
+        <input asp-for="ad" />
+    </div>
+    <div>
+        <label>Ülke</label>
+        <input asp-for="ulke" />
+    </div>
+    <div>
+        <label>Yıl</label>
+        <input asp-for="yil" type="number" max="@DateTime.Now.Year" />
+    </div>
+    <div>
+        <label>Tür</label>
+        <input asp-for="tur" />
+    </div>
+    <div>
+        <label>Özet</label>
+        <input asp-for="ozet" />
+    </div>
+    <div>
+        <label>Oyuncular</label>
+        <input asp-for="oyuncular" />
+    </div>
+    <div>
+        <label>Kopya Sayısı</label>
+        <input asp-for="kopya_sayisi" type="number" value="2" readonly style="background:#f5f5f5;" />
+    </div>
+    <button type="submit">Kaydet</button>
+</form>
+<br><br><br>
