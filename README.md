@@ -1,6 +1,6 @@
 # DVD Kiralama Yönetim Sistemi
 
-Bir DVD kiralama dükkânının film, müşteri ve kiralama işlemlerini yöneten web uygulaması. ASP.NET Core MVC ve SQL Server ile geliştirildi.
+Bir DVD kiralama dükkânının film, müşteri ve kiralama işlemlerini yöneten web uygulaması. ASP.NET Core MVC ve SQL Server ile, web programlama dersi projesi olarak geliştirildi.
 
 ## Özellikler
 
