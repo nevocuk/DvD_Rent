@@ -1,0 +1,12 @@
+# Derleme ciktilari
+bin/
+obj/
+.vs/
+*.user
+
+# Isletim sistemi
+.DS_Store
+Thumbs.db
+
+# Veritabani yedekleri (kurulum icin veritabani/kurulum.sql kullanilir)
+*.bak
